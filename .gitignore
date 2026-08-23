@@ -1,0 +1,36 @@
+# OS and IDE
+.DS_Store
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Local environment files
+.env
+
+# API (Gradle / Java)
+api/HELP.md
+api/.gradle/
+api/build/
+api/.apt_generated/
+api/.classpath
+api/.factorypath
+api/.project
+api/.settings/
+api/.springBeans
+api/.sts4-cache/
+api/bin/
+api/out/
+api/nbproject/private/
+api/nbbuild/
+api/dist/
+api/nbdist/
+api/.nb-gradle/
+
+# Web (React Router)
+web/node_modules/
+web/.react-router/
+web/build/
+
+# Local brainstorming previews
+.superpowers/
