@@ -8,6 +8,9 @@
 # Local environment files
 .env
 
+# Downloaded source responses for local data enrichment
+data/cache/
+
 # API (Gradle / Java)
 api/HELP.md
 api/.gradle/
