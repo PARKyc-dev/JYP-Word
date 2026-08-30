@@ -1,10 +1,12 @@
 package com.parkyc.jypword.word.domain;
 
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,31 +16,32 @@ import java.time.Instant;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "word_sentence")
+@Table(name = "word_book_item")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @SequenceGenerator(
-        name = "SEQ_W_SENTENCE",
-        sequenceName = "SEQ_W_SENTENCE",
+        name = "SEQ_WORD_BOOK_ITEM",
+        sequenceName = "SEQ_WORD_BOOK_ITEM",
         allocationSize = 1,
         initialValue = 1
 )
-public class WordSentence {
+public class WordBookItem {
 
     @Id
-    @Column(name = "sentence_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_W_SENTENCE")
-    private Long sentenceId;
+    @Column(name = "item_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_WORD_BOOK_ITEM")
+    private Long itemId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "word_book_id")
+    private WordBook wordBook;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "word_id")
     private Word word;
 
-    @Column(name = "sentence_mean")
-    private String sentenceMean;
-
-    @Column(name = "display_order")
-    private int displayOrder;
+    @Column(name = "sequence")
+    private int sequence;
 
     @Column(name = "created_at", updatable = false)
     @CreatedDate
@@ -47,5 +50,5 @@ public class WordSentence {
     @Column(name = "updated_at")
     @LastModifiedDate
     private Instant updatedAt;
-
 }
+
