@@ -34,6 +34,9 @@ public class Word {
     @Column(name = "word")
     private String word;
 
+    @Column(name = "accent")
+    private String accent;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "word")
     private List<WordMean> wordMeans;
 
