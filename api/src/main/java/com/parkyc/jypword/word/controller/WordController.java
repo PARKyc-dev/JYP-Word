@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/word")
 public class WordController {
 
+    /** 관리자 기능으로 추후 추가 계획 */
+
     // Word 추가
 
     // 단어 뜻 추가

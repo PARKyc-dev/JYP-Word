@@ -1,6 +1,5 @@
-package com.parkyc.jypword.word.domain;
+package com.parkyc.jypword.wordBook.domain;
 
-import com.google.errorprone.annotations.InlineMeValidationDisabled;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,7 +10,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

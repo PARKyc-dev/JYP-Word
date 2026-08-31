@@ -1,12 +1,12 @@
-package com.parkyc.jypword.word.domain;
+package com.parkyc.jypword.wordBook.domain;
 
 
+import com.parkyc.jypword.word.domain.Word;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

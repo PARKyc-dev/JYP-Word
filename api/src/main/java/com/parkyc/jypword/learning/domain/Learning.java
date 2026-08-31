@@ -1,6 +1,6 @@
 package com.parkyc.jypword.learning.domain;
 
-import com.parkyc.jypword.word.domain.WordBook;
+import com.parkyc.jypword.wordBook.domain.WordBook;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

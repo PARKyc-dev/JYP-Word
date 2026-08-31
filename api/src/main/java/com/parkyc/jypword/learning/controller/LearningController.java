@@ -1,5 +1,8 @@
 package com.parkyc.jypword.learning.controller;
 
+import com.parkyc.jypword.learning.controller.request.TodayLearnRequest;
+import com.parkyc.jypword.learning.controller.response.TodayLearnResponse;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -7,10 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/learn")
 public class LearningController {
 
-    // 다음 학습단어 받아오기
+    /** 사용자 주로 사용하는 API */
 
-    // 학습기록 확인
+    // 1. 금일 학습목록 가져오기.
+    @GetMapping("/today")
+    public TodayLearnResponse getTodayLearnWords(TodayLearnRequest request){
 
-    //
 
+
+        return new TodayLearnResponse();
+    }
+
+    // 2. 학습 내용 저장하기.
 }
