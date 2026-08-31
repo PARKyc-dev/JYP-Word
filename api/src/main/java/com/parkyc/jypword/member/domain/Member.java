@@ -1,4 +1,4 @@
-package com.parkyc.jypword.wordBook.domain;
+package com.parkyc.jypword.member.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -14,24 +14,27 @@ import java.time.Instant;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "word_book")
+@Table(name = "member")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @SequenceGenerator(
-        name = "SEQ_WORD_BOOK",
-        sequenceName = "SEQ_WORD_BOOK",
+        name = "SEQ_MEMBER",
+        sequenceName = "SEQ_MEMBER",
         allocationSize = 1,
         initialValue = 1
 )
-public class WordBook {
+public class Member {
 
     @Id
-    @Column(name = "word_book_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_WORD_BOOK")
-    private Long wordBookId;
+    @Column(name = "member_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_MEMBER")
+    private Long memberId;
 
-    @Column(name = "word_book_name")
-    private String wordBookName;
+    @Column(name = "login_id")
+    private String loginId;
+
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "created_at", updatable = false)
     @CreatedDate

@@ -1,8 +1,8 @@
 package com.parkyc.jypword.learning.controller.request;
 
+import com.parkyc.jypword.member.domain.Member;
 import lombok.Data;
 
-import java.lang.reflect.Member;
 
 @Data
 public class TodayLearnRequest {

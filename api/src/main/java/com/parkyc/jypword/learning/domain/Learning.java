@@ -1,6 +1,7 @@
 package com.parkyc.jypword.learning.domain;
 
-import com.parkyc.jypword.wordBook.domain.WordBook;
+import com.parkyc.jypword.member.domain.Member;
+import com.parkyc.jypword.wordbook.domain.WordBook;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,8 +25,9 @@ public class Learning {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_LEARNING")
     private Long learningId;
 
-    @Column(name = "member_id")
-    private String memberId;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "word_book_id")
