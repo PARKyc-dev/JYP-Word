@@ -1,60 +1,59 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 
 import type { Route } from "./+types/study";
+import { fetchTodayWords, type TodayWord } from "../api/learning";
 import { ThemeToggle } from "../theme";
 
-type Word = {
-  word: string;
-  pronunciation: string;
-  meaning: string;
-  sentence: string;
-  translation: string;
+const meanTypeLabels: Record<string, string> = {
+  noun: "명사",
+  verb: "동사",
+  adjective: "형용사",
+  adverb: "부사",
+  pronoun: "대명사",
+  preposition: "전치사",
+  conjunction: "접속사",
+  interjection: "감탄사",
+  article: "관사",
 };
-
-const initialWords: Word[] = [
-  {
-    word: "deliberate",
-    pronunciation: "/dɪˈlɪbərət/",
-    meaning: "신중한, 의도적인",
-    sentence: "She made a deliberate effort to speak more slowly.",
-    translation: "그녀는 더 천천히 말하려고 의식적으로 노력했다.",
-  },
-  {
-    word: "maintain",
-    pronunciation: "/meɪnˈteɪn/",
-    meaning: "유지하다",
-    sentence: "It is important to maintain a regular study routine.",
-    translation: "규칙적인 학습 습관을 유지하는 것이 중요하다.",
-  },
-  {
-    word: "approach",
-    pronunciation: "/əˈproʊtʃ/",
-    meaning: "접근법, 다가가다",
-    sentence: "Try a different approach when the current one feels difficult.",
-    translation: "현재 방법이 어렵게 느껴지면 다른 접근법을 시도해 봐라.",
-  },
-  {
-    word: "consistent",
-    pronunciation: "/kənˈsɪstənt/",
-    meaning: "꾸준한, 일관된",
-    sentence: "Consistent practice creates lasting progress.",
-    translation: "꾸준한 연습은 지속되는 발전을 만든다.",
-  },
-];
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "오늘의 학습 | JYP Word" }];
 }
 
 export default function Study() {
-  const [studyWords, setStudyWords] = useState(initialWords);
-  const [testWords, setTestWords] = useState<Word[]>([]);
+  const [studyWords, setStudyWords] = useState<TodayWord[]>([]);
+  const [testWords, setTestWords] = useState<TodayWord[]>([]);
+  const [totalWords, setTotalWords] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isRevealed, setIsRevealed] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [drag, setDrag] = useState({ x: 0, y: 0, isDragging: false });
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
   const currentWord = studyWords[0];
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchTodayWords(controller.signal)
+      .then((data) => {
+        setStudyWords(data.words);
+        setTotalWords(data.words.length);
+      })
+      .catch((requestError: unknown) => {
+        if (requestError instanceof DOMException && requestError.name === "AbortError") return;
+        setError(
+          requestError instanceof Error
+            ? requestError.message
+            : "오늘의 단어를 가져오지 못했습니다.",
+        );
+      })
+      .finally(() => setIsLoading(false));
+
+    return () => controller.abort();
+  }, []);
+
   const cardStyle = {
     opacity: 1 - Math.min(0.35, Math.max(Math.abs(drag.x), Math.abs(drag.y)) / 900),
     transform: `translate3d(${drag.x}px, ${drag.y}px, 0) rotate(${drag.x * 0.035}deg)`,
@@ -128,12 +127,22 @@ export default function Study() {
         </Link>
         <div>
           <span>오늘의 학습</span>
-          <strong>{initialWords.length - studyWords.length + 1} / 20</strong>
+          <strong>{currentWord ? totalWords - studyWords.length + 1 : totalWords} / {totalWords || 20}</strong>
         </div>
         <ThemeToggle />
       </header>
 
-      {currentWord ? (
+      {isLoading ? (
+        <section className="study-status" aria-live="polite">
+          <h1>오늘의 단어를 불러오는 중이에요.</h1>
+        </section>
+      ) : error ? (
+        <section className="study-status study-status--error" role="alert">
+          <h1>단어를 불러오지 못했어요.</h1>
+          <p>{error}</p>
+          <Link to="/">홈으로 돌아가기</Link>
+        </section>
+      ) : currentWord ? (
         <section className="word-deck" aria-label="단어 카드">
           {studyWords.slice(1, 3).map((word, index) => (
             <div className={`word-card word-card--stack-${index + 1}`} key={word.word} />
@@ -151,11 +160,28 @@ export default function Study() {
             <h1>{currentWord.word}</h1>
             {isRevealed && (
               <div className="word-card__details">
-                <p className="word-card__pronunciation">{currentWord.pronunciation}</p>
-                <p className="word-card__meaning">{currentWord.meaning}</p>
-                <hr />
-                <p className="word-card__sentence">{currentWord.sentence}</p>
-                <p className="word-card__translation">{currentWord.translation}</p>
+                <p className="word-card__pronunciation">
+                  {currentWord.accent || "발음 정보가 없어요."}
+                </p>
+                <p className="word-card__meaning">
+                  {currentWord.meanings.length
+                    ? currentWord.meanings
+                        .map(
+                          (meaning) =>
+                            `[${meanTypeLabels[meaning.type] || meaning.type}] ${meaning.meaning}`,
+                        )
+                        .join(" · ")
+                    : "뜻 정보가 없어요."}
+                </p>
+                {currentWord.sentences.length > 0 && <hr />}
+                {currentWord.sentences.map((sentence) => (
+                  <div className="word-card__example" key={sentence.displayOrder}>
+                    <p className="word-card__sentence">
+                      {sentence.sentence || "영문 예문 정보가 없어요."}
+                    </p>
+                    <p className="word-card__translation">{sentence.translation}</p>
+                  </div>
+                ))}
               </div>
             )}
             {drag.y > 48 && <span className="word-card__test-hint">테스트 보기에 추가</span>}

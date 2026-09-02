@@ -1,14 +1,22 @@
 package com.parkyc.jypword.learning.repository;
 
 import com.parkyc.jypword.learning.domain.Learning;
-import com.parkyc.jypword.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface LearningJpaRepository extends JpaRepository<Learning, Long> {
 
-    // 현재 학습중인 워드북 정보를 가져오는 메소드
-
-    List<Learning> findAllByMember(Member member);
+    @Query("""
+            select learning
+            from Learning learning
+            join fetch learning.wordBook
+            where learning.member = :member
+              and learning.isCompleted = false
+            order by learning.createdAt desc
+            limit 1
+            """)
+    Optional<Learning> findCurrentByMember(@Param("member") String member);
 }

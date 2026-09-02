@@ -1,11 +1,27 @@
 package com.parkyc.jypword.learning.service.result;
 
-import com.parkyc.jypword.wordbook.domain.WordBook;
-import lombok.Data;
+import java.time.LocalDate;
+import java.util.List;
 
-@Data
-public class TodayWordResult {
-    private WordBook wordBook;
-    // words
-    // private List<WordBookItem> words;
+public record TodayWordResult(
+        String member,
+        LocalDate learningDate,
+        Long wordBookId,
+        String wordBookName,
+        int cursor,
+        List<WordResult> words
+) {
+    public record WordResult(
+            String word,
+            String accent,
+            List<MeaningResult> meanings,
+            List<SentenceResult> sentences
+    ) {
+    }
+
+    public record MeaningResult(String type, String meaning, int displayOrder) {
+    }
+
+    public record SentenceResult(String sentence, String translation, int displayOrder) {
+    }
 }

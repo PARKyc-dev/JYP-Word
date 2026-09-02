@@ -34,6 +34,9 @@ public class WordSentence {
     @JoinColumn(name = "word_id")
     private Word word;
 
+    @Column(name = "sentence")
+    private String sentence;
+
     @Column(name = "sentence_mean")
     private String sentenceMean;
 

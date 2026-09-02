@@ -342,7 +342,9 @@ button {
 .word-card__details {
   display: grid;
   gap: 0.75rem;
+  max-height: 60%;
   margin-top: auto;
+  overflow-y: auto;
   animation: card-details-in 180ms ease both;
 }
 
@@ -369,6 +371,11 @@ button {
   font-size: 1.125rem;
   font-weight: 650;
   line-height: 1.5;
+}
+
+.word-card__example {
+  display: grid;
+  gap: 0.25rem;
 }
 
 .word-card__translation {
@@ -452,6 +459,33 @@ button {
   border-radius: 1.75rem;
   text-align: center;
   background: var(--app-surface);
+}
+
+.study-status {
+  display: grid;
+  align-content: center;
+  min-height: 25rem;
+  padding: 2rem;
+  border-radius: 1.75rem;
+  text-align: center;
+  background: var(--app-surface);
+}
+
+.study-status h1,
+.study-status p {
+  margin: 0;
+}
+
+.study-status p {
+  margin-top: 0.75rem;
+  color: var(--app-muted);
+  line-height: 1.5;
+}
+
+.study-status a {
+  margin-top: 1.25rem;
+  color: var(--app-accent);
+  font-weight: 700;
 }
 
 .study-complete span {
