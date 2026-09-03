@@ -7,7 +7,6 @@ import com.parkyc.jypword.word.domain.Word;
 import com.parkyc.jypword.word.domain.WordStatus;
 import com.parkyc.jypword.wordbook.domain.WordBook;
 import com.parkyc.jypword.wordbook.domain.WordBookItem;
-import com.parkyc.jypword.wordbook.repository.WordBookItemJpaRepository;
 import com.parkyc.jypword.wordbook.repository.WordBookJpaRepository;
 import org.junit.jupiter.api.Test;
 
@@ -27,11 +26,9 @@ class LearningServiceTest {
     @Test
     void createsRandomLearningAndReturnsTwentyWordsWhenLearningDoesNotExist() {
         LearningJpaRepository learningRepository = mock(LearningJpaRepository.class);
-        WordBookItemJpaRepository itemRepository = mock(WordBookItemJpaRepository.class);
         WordBookJpaRepository wordBookRepository = mock(WordBookJpaRepository.class);
         LearningService service = new LearningService(
                 learningRepository,
-                itemRepository,
                 wordBookRepository
         );
         WordBook wordBook = new WordBook(1L, "sample", null, null, null);
@@ -39,7 +36,7 @@ class LearningServiceTest {
 
         when(learningRepository.findCurrentByMember("member-uuid")).thenReturn(Optional.empty());
         when(wordBookRepository.findHavingAtLeastItems(20)).thenReturn(List.of(wordBook));
-        when(itemRepository.findAllByWordBookWordBookIdOrderBySequenceAsc(1L)).thenReturn(items);
+        when(wordBookRepository.findItemsByWordBookId(1L)).thenReturn(items);
         when(learningRepository.save(any(Learning.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -56,11 +53,9 @@ class LearningServiceTest {
     @Test
     void wrapsToFirstWordWhenNextCursorPassesEndOfWordBook() {
         LearningJpaRepository learningRepository = mock(LearningJpaRepository.class);
-        WordBookItemJpaRepository itemRepository = mock(WordBookItemJpaRepository.class);
         WordBookJpaRepository wordBookRepository = mock(WordBookJpaRepository.class);
         LearningService service = new LearningService(
                 learningRepository,
-                itemRepository,
                 wordBookRepository
         );
         WordBook wordBook = new WordBook(1L, "sample", null, null, null);
@@ -69,7 +64,7 @@ class LearningServiceTest {
 
         when(learningRepository.findCurrentByMember("member-uuid"))
                 .thenReturn(Optional.of(learning));
-        when(itemRepository.findAllByWordBookWordBookIdOrderBySequenceAsc(1L))
+        when(wordBookRepository.findItemsByWordBookId(1L))
                 .thenReturn(items(wordBook, 25));
 
         TodayWordResult result = service.getTodayWordsByMember("member-uuid").orElseThrow();

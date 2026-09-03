@@ -5,7 +5,6 @@ import com.parkyc.jypword.learning.repository.LearningJpaRepository;
 import com.parkyc.jypword.learning.service.result.TodayWordResult;
 import com.parkyc.jypword.wordbook.domain.WordBookItem;
 import com.parkyc.jypword.wordbook.domain.WordBook;
-import com.parkyc.jypword.wordbook.repository.WordBookItemJpaRepository;
 import com.parkyc.jypword.wordbook.repository.WordBookJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,6 @@ public class LearningService {
     private static final int TODAY_WORD_COUNT = 20;
 
     private final LearningJpaRepository learningRepository;
-    private final WordBookItemJpaRepository wordBookItemRepository;
     private final WordBookJpaRepository wordBookRepository;
 
     @Transactional
@@ -46,8 +44,8 @@ public class LearningService {
         }
 
         WordBook wordBook = wordBooks.get(ThreadLocalRandom.current().nextInt(wordBooks.size()));
-        List<WordBookItem> items = wordBookItemRepository
-                .findAllByWordBookWordBookIdOrderBySequenceAsc(wordBook.getWordBookId());
+        List<WordBookItem> items = wordBookRepository
+                .findItemsByWordBookId(wordBook.getWordBookId());
         int startIndex = ThreadLocalRandom.current().nextInt(items.size() - TODAY_WORD_COUNT + 1);
         int cursor = items.get(startIndex).getSequence();
 
@@ -56,8 +54,8 @@ public class LearningService {
 
     private Optional<TodayWordResult> findTodayWords(Learning learning, Instant now, ZoneId zoneId) {
         int cursor = learning.cursorFor(now, zoneId);
-        List<WordBookItem> allItems = wordBookItemRepository
-                .findAllByWordBookWordBookIdOrderBySequenceAsc(learning.getWordBook().getWordBookId());
+        List<WordBookItem> allItems = wordBookRepository
+                .findItemsByWordBookId(learning.getWordBook().getWordBookId());
         if (allItems.size() < TODAY_WORD_COUNT) {
             return Optional.empty();
         }
